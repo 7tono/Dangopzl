@@ -1,39 +1,35 @@
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Rebar;
 
 namespace Dangopzl
 {
     public partial class Form1 : Form
     {
+        Graphics g;
+
+
+
         public Form1()
         {
             InitializeComponent();
             Bitmap canvas = new Bitmap(pictureBox1.Width, pictureBox1.Height);
-            Graphics g = Graphics.FromImage(canvas);
-
-            //枠線
-            g.DrawLine(Pens.Black, 0, 0, 0, 511);
-            g.DrawLine(Pens.Black, 306, 0, 306, 511);
-            g.DrawLine(Pens.Black, 0, 0, 306, 0);
-            g.DrawLine(Pens.Black, 0, 511, 306, 511);
+            g = Graphics.FromImage(canvas);
 
             //ボーダー線(縦)
-            g.DrawLine(Pens.Black, 51, 0, 51, 511);
-            g.DrawLine(Pens.Black, 102, 0, 102, 511);
-            g.DrawLine(Pens.Black, 153, 0, 153, 511);
-            g.DrawLine(Pens.Black, 204, 0, 204, 511);
-            g.DrawLine(Pens.Black, 255, 0, 255, 511);
-            //ボーダー線(横)
-            g.DrawLine(Pens.Black, 0, 51, 306, 51);
-            g.DrawLine(Pens.Black, 0, 102, 306, 102);
-            g.DrawLine(Pens.Black, 0, 153, 306, 153);
-            g.DrawLine(Pens.Black, 0, 204, 306, 204);
-            g.DrawLine(Pens.Black, 0, 255, 306, 255);
-            g.DrawLine(Pens.Black, 0, 306, 306, 306);
-            g.DrawLine(Pens.Black, 0, 357, 306, 357);
-            g.DrawLine(Pens.Black, 0, 408, 306, 408);
-            g.DrawLine(Pens.Black, 0, 459, 306, 459);
-            g.DrawLine(Pens.Black, 0, 510, 306, 510);
+            for (int r = 0; r <= 357; r += 51)
+            {
+                g.DrawLine(Pens.Black, r, 0, r, 511);
+                
+            }
 
+
+            //ボーダー線(横) 357
+            for (int r = 0; r <= 510; r += 51)
+            {
+                g.DrawLine(Pens.Black, 0, r, 306, r);
+                
+            }
 
 
             g.Dispose();
@@ -47,11 +43,25 @@ namespace Dangopzl
             listView1.View = View.Details;
             InitializeListView();
 
-
-
+            /*
+            int[,] intValues = new int[10, 6] 
+            {
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+            };
+            */
         }
         private void InitializeListView()
         {
+            listView1.LabelEdit = true;
             listView1.View = View.Details;
             listView1.Columns.Add("順位");
 
@@ -66,18 +76,104 @@ namespace Dangopzl
         string scorecounter_str = "";
         int scorecounter = 0;
 
+        //マップ作成
+        int[,] intValues = new int[10, 6]
+            {
+                {0, 1, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 1, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 1, 0},
+                {0, 0, 0, 0, 0, 0},
+                {0, 0, 1, 0, 0, 0},
+                {0, 0, 0, 0, 0, 0},
+            };
+        private void makemap()　//マップ初期化
+        {
+            
+            for (int r = 0; r <= 9; r++)//行
+            {
+                for (int c = 0; c <= 5; c++)//列
+                {
+                    if (intValues[r, c] == 1)
+                    {
+                        intValues[r, c] = 0;
+                    }
+                }
+            }
+        }
+
+
+
         private void button1_Click(object sender, EventArgs e)
         {
             nuwscore = textBox1.Text;
             scorecounter++;
 
 
-            if (listView1.Items.Count <= 19)
+
+
+
+
+            //if (listView1.Items.Count <= 19)
             {
                 scorecounter_str = scorecounter.ToString();
                 listView1.Items.Add(new ListViewItem(new string[] { scorecounter_str, nuwscore }));
             }
 
+            for(int r = 0; r <= 9; r++)//行
+            {
+                for (int c = 0; c <= 5; c++)//列
+                {
+                    if (intValues[r, c] == 1)
+                    {
+                        textBox1.Text = "100";
+                    }
+                }
+            }
+        }
+
+       
+
+        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        {
+            for (int r = 0; r <= 9; r++)//行
+            {
+                for (int c = 0; c <= 5; c++)//列
+                {
+                    if (intValues[r, c] == 1)
+                    {
+                        //g.DrawLine(Pens.Red,1, 1, 1, 1);
+                        e.Graphics.FillEllipse(Brushes.Red, c*51+2, r*51+2, 48, 48);
+                    }
+                }
+            }
+        }
+
+
+
+
+        int value1;
+        int value2;
+        int value3;
+
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            var rand_row = new Random();
+            value1 = rand_row.Next(minValue: 0, maxValue:10);
+            var rand_colm = new Random();
+            value2 = rand_row.Next(minValue: 0, maxValue: 6);
+            var rand_num = new Random();
+            value3 = rand_row.Next(minValue: 0, maxValue: 2);
+
+
+            intValues[value1, value2] = value3;
+
+
+            pictureBox1.Refresh();
         }
     }
 }
